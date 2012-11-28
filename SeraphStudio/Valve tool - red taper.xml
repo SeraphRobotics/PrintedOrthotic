@@ -1,0 +1,121 @@
+ <toolScript name="Red Taper"
+             description="Tool: valve based tool with red taper tip"
+             printer="Seraph Valve">
+
+  <settings>
+    <!-- Settings that are not per-tool -->
+    <printAcceleration text="Print Acceleration" units="mm/s^2">100</printAcceleration>
+  </settings>
+
+   <!-- Expose settings for the first tool -->
+   <tool name="Red Taper valve1" material="valve1" scriptVariable="redvalve1">
+     <settings>
+       <sliceHeight text="Slice Height" units="mm">0.7</sliceHeight>
+       <!--Top speed in millimeters/second for this tool during execution of path.-->
+         <pathSpeed text="Path Speed" units="mm/s">30</pathSpeed>
+       <!--Width of the path in millimeters.-->
+         <pathWidth text="Path Width" units="mm">0.8</pathWidth>
+       <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
+         <depositionRate text="DepositionRate" units="mm/mm">0.00</depositionRate>
+       <!--Seconds of early dispensing to start flow quickly.-->
+         <pushout text="Pushout" units="seconds">0.06</pushout>
+       <!--Seconds reverse plunger motion to stop flow quickly.-->
+         <suckback text="Suckback" units="seconds">0.06</suckback>
+       <!--Seconds to delay suckback by.-->
+         <suckbackDelay text="Suckback Delay" units="seconds">0</suckbackDelay>
+       <!--Millimeters of clearance between tip and last layer when traversing.-->
+         <clearance text="Clearance" units="mm">10</clearance>
+       <!--Number of paths after which to trigger an automatic pause.-->
+         <pausePaths text="Pause after # Paths" units="# of paths">300</pausePaths>
+       <!--no comment-->
+         <pitch text="Pitch" units="?">0.000397</pitch>
+     </settings>
+   </tool>
+   <tool name="Red Taper valve2" material="valve2" scriptVariable="redvalve2">
+     <settings>
+       <sliceHeight text="Slice Height" units="mm">0.7</sliceHeight>
+       <!--Top speed in millimeters/second for this tool during execution of path.-->
+       <pathSpeed text="Path Speed" units="mm/s">30</pathSpeed>
+       <!--Width of the path in millimeters.-->
+       <pathWidth text="Path Width" units="mm">0.8</pathWidth>
+       <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
+       <depositionRate text="DepositionRate" units="mm/mm">0.00</depositionRate>
+       <!--Seconds of early dispensing to start flow quickly.-->
+       <pushout text="Pushout" units="seconds">0.06</pushout>
+       <!--Seconds reverse plunger motion to stop flow quickly.-->
+       <suckback text="Suckback" units="seconds">0.06</suckback>
+       <!--Seconds to delay suckback by.-->
+       <suckbackDelay text="Suckback Delay" units="seconds">0</suckbackDelay>
+       <!--Millimeters of clearance between tip and last layer when traversing.-->
+       <clearance text="Clearance" units="mm">10</clearance>
+       <!--Number of paths after which to trigger an automatic pause.-->
+       <pausePaths text="Pause after # Paths" units="# of paths">300</pausePaths>
+       <!--no comment-->
+       <pitch text="Pitch" units="?">0.000397</pitch>
+     </settings>
+   </tool>
+
+  <printScript>
+  <![CDATA[
+function makeCalib(x){
+  x.CompressionVolume = (x.pushout+x.suckback)*.5*5000*x.pitch;
+  x.AreaConstant  = x.depositionRate*3.14159265*64/x.sliceHeight/x.pathWidth;
+
+  y={pathSpeed: x.pathSpeed,
+	 pathHeight: x.sliceHeight,
+	 pathWidth: x.pathWidth,
+	 areaConstant: x.AreaConstant,
+	 compressionVolume: x.CompressionVolume
+	}
+  return y;
+}
+  
+  
+progress.setSteps(redvalve1.meshes.length*2 + redvalve2.meshes.length*2+ 3);
+
+slicer.setSliceHeight(redvalve1.sliceHeight);
+pather.set("PathWidth", redvalve1.pathWidth);
+for (var i = 0; i < redvalve1.meshes.length; ++i) {
+  progress.log("Slicing redvalve1 Mesh");
+  slicer.doSlicing(redvalve1.meshes[i]);
+  progress.step();
+  progress.log("Pathing redvalve1 Mesh");
+  pather.doPathing(redvalve1.meshes[i]);
+  progress.step();
+}
+
+slicer.setSliceHeight(redvalve2.sliceHeight);
+pather.set("PathWidth", redvalve2.pathWidth);
+for (var i = 0; i < redvalve2.meshes.length; ++i) {
+  progress.log("Slicing redvalve2 Mesh");
+  slicer.doSlicing(redvalve2.meshes[i]);
+  progress.step();
+  progress.log("Pathing redvalve2 Mesh");
+  pather.doPathing(redvalve2.meshes[i]);
+  progress.step();
+}
+
+
+var redvalve1MaterialCalibration = makeCalib(redvalve1);
+var redvalve2MaterialCalibration = makeCalib(redvalve2);
+
+
+var fabWriter = fabFile.fabAtHomeModel2Writer();
+
+fabWriter.addMeshes("redvalve1", redvalve1MaterialCalibration, redvalve1.meshes);
+progress.step();
+
+fabWriter.addMeshes("redvalve2", redvalve2MaterialCalibration, redvalve2.meshes);
+progress.step();
+
+fabWriter.sortBottomUp();
+fabWriter.setPrintAcceleration(printAcceleration);
+
+progress.step();
+fabWriter.print();
+
+progress.finish();
+
+  ]]>
+  </printScript>
+</toolScript>

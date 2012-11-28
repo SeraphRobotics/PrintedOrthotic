@@ -1,0 +1,88 @@
+ <toolScript name="Blue Taper, Silicone Pathing Modified"
+             description="Tool:   10cc syringe of MasonSilicone with a blue taper tip"
+             printer="Seraph">
+
+  <settings>
+    <!-- Settings that are not per-tool -->
+    <printAcceleration text="Print Acceleration" units="mm/s^2">100</printAcceleration>
+  </settings>
+
+   <!-- Expose settings for the first tool -->
+   <tool name="Blue Taper MasonSilicone, Pathing Modified" material="Silicone" scriptVariable="blueSilicone">
+     <settings>
+       <sliceHeight text="Slice Height" units="mm">0.25</sliceHeight>
+       <!--Top speed in millimeters/second for this tool during execution of path.-->
+         <pathSpeed text="Path Speed" units="mm/s">11</pathSpeed>
+       <!--Width of the path in millimeters.-->
+         <pathWidth text="Path Width" units="mm">0.5</pathWidth>
+       <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
+         <depositionRate text="DepositionRate" units="mm/mm">0.00085</depositionRate>
+       <!--Seconds of early dispensing to start flow quickly.-->
+         <pushout text="Pushout" units="seconds">0.11</pushout>
+       <!--Seconds reverse plunger motion to stop flow quickly.-->
+         <suckback text="Suckback" units="seconds">0.11</suckback>
+       <!--Seconds to delay suckback by.-->
+         <suckbackDelay text="Suckback Delay" units="seconds">0</suckbackDelay>
+       <!--Millimeters of clearance between tip and last layer when traversing.-->
+         <clearance text="Clearance" units="mm">1</clearance>
+       <!--Number of paths after which to trigger an automatic pause.-->
+         <pausePaths text="Pause after # Paths" units="# of paths">300</pausePaths>
+       <!--no comment-->
+         <pitch text="Pitch" units="?">0.000397</pitch>
+     </settings>
+   </tool>
+
+  <printScript>
+  <![CDATA[
+function makeCalib(x){
+  x.CompressionVolume = (x.pushout+x.suckback)*.5*5000*x.pitch;
+  x.AreaConstant  = x.depositionRate*3.14159265*64/x.sliceHeight/x.pathWidth;
+
+  y={pathSpeed: x.pathSpeed,
+	 pathHeight: x.sliceHeight,
+	 pathWidth: x.pathWidth,
+	 areaConstant: x.AreaConstant,
+	 compressionVolume: x.CompressionVolume
+	}
+  return y;
+}
+
+
+progress.setSteps(blueSilicone.meshes.length*2 + 4);
+
+slicer.setSliceHeight(blueSilicone.sliceHeight);
+pather.set("PathWidth", blueSilicone.pathWidth);
+for (var i = 0; i < blueSilicone.meshes.length; ++i) {
+  var slice_stack = slicer.doSlicing(blueSilicone.meshes[i]);
+  progress.step();
+  var numSlices = slice_stack.getNumberOfSlices();
+  var first_stack = slice_stack.getSlices(0, 0.1 * numSlices);
+  var second_stack = slice_stack.getSlices(0.1 * numSlices + 1, 0.9 * numSlices);
+  var third_stack = slice_stack.getSlices(0.9 * numSlices + 1, numSlices - 1);
+  pather.setPather(0);
+  pather.doPathing(blueSilicone.meshes[i], first_stack);
+  pather.setPather(1);
+  pather.doPathing(blueSilicone.meshes[i], second_stack);
+  pather.setPather(0);
+  pather.doPathing(blueSilicone.meshes[i], third_stack);
+  progress.step();
+}
+
+var blueSiliconeMaterialCalibration = makeCalib(blueSilicone);
+
+var fabWriter = fabFile.fabAtHomeModel2Writer();
+
+fabWriter.addMeshes("blueSilicone", blueSiliconeMaterialCalibration, blueSilicone.meshes);
+progress.step();
+
+fabWriter.sortBottomUp();
+fabWriter.setPrintAcceleration(printAcceleration);
+
+progress.step();
+fabWriter.print();
+
+progress.finish();
+
+  ]]>
+  </printScript>
+</toolScript>
