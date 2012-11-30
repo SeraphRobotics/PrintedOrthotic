@@ -1,0 +1,79 @@
+ <toolScript name="HARD-Stochastic"
+             description="Stochastic sample 29, blue tip, 3mm offset, 70psi"
+             printer="Stochastic">
+
+  <settings>
+    <!-- Settings that are not per-tool -->
+    <printAcceleration text="Print Acceleration" units="mm/s^2">100</printAcceleration>
+  </settings>
+
+   <!-- Expose settings for the first tool -->
+   <tool name="Blue Taper HardStochastic" material="HardStochastic" scriptVariable="HardStochastic">
+     <settings>
+       <sliceHeight text="Slice Height" units="mm">0.85</sliceHeight>
+       <!--Top speed in millimeters/second for this tool during execution of path.-->
+         <pathSpeed text="Path Speed" units="mm/s">10</pathSpeed>
+       <!--Width of the path in millimeters.-->
+         <pathWidth text="Path Width" units="mm">1</pathWidth>
+       <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
+         <depositionRate text="DepositionRate" units="mm/mm">0.0035</depositionRate>
+       <!--Seconds of early dispensing to start flow quickly.-->
+         <pushout text="Pushout" units="seconds">0.5</pushout>
+       <!--Seconds reverse plunger motion to stop flow quickly.-->
+         <suckback text="Suckback" units="seconds">0.5</suckback>
+       <!--Seconds to delay suckback by.-->
+         <suckbackDelay text="Suckback Delay" units="seconds">0</suckbackDelay>
+       <!--Millimeters of clearance between tip and last layer when traversing.-->
+         <clearance text="Clearance" units="mm">0</clearance>
+       <!--Number of paths after which to trigger an automatic pause.-->
+         <pausePaths text="Pause after # Paths" units="# of paths">300</pausePaths>
+       <!--no comment-->
+         <pitch text="Pitch" units="?">0.000397</pitch>
+     </settings>
+   </tool>
+
+  <printScript>
+  <![CDATA[
+function makeCalib(x){
+  x.CompressionVolume = (x.pushout+x.suckback)*.5*5000*x.pitch;
+  x.AreaConstant  = x.depositionRate*3.14159265*64/x.sliceHeight/x.pathWidth;
+
+  y={pathSpeed: x.pathSpeed,
+	 pathHeight: x.sliceHeight,
+	 pathWidth: x.pathWidth,
+	 areaConstant: x.AreaConstant,
+	 compressionVolume: x.CompressionVolume
+	}
+  return y;
+}
+progress.setSteps(HardStochastic.meshes.length*2 + 3);
+
+slicer.setSliceHeight(HardStochastic.sliceHeight);
+pather.set("PathWidth", HardStochastic.pathWidth);
+for (var i = 0; i < HardStochastic.meshes.length; ++i) {
+  progress.log("Slicing HardStochastic Mesh");
+  slicer.doSlicing(HardStochastic.meshes[i]);
+  progress.step();
+  progress.log("Pathing HardStochastic Mesh");
+  pather.doPathing(HardStochastic.meshes[i]);
+  progress.step();
+}
+
+var HardStochasticMaterialCalibration = makeCalib(HardStochastic);
+
+var fabWriter = fabFile.fabAtHomeModel2Writer();
+
+fabWriter.addMeshes("HardStochastic", HardStochasticMaterialCalibration, HardStochastic.meshes);
+progress.step();
+
+fabWriter.sortBottomUp();
+fabWriter.setPrintAcceleration(printAcceleration);
+
+progress.step();
+fabWriter.print();
+
+progress.finish();
+
+  ]]>
+  </printScript>
+</toolScript>
