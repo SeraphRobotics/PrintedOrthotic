@@ -1,5 +1,5 @@
  <toolScript name="HARD-Stochastic"
-             description="Stochastic sample 29, blue tip, 3mm offset, 70psi"
+             description="Stochastic sample 58, blue tip, 5mm offset, 70psi"
              printer="Stochastic">
 
   <settings>
@@ -10,11 +10,11 @@
    <!-- Expose settings for the first tool -->
    <tool name="Blue Taper HardStochastic" material="HardStochastic" scriptVariable="HardStochastic">
      <settings>
-       <sliceHeight text="Slice Height" units="mm">0.85</sliceHeight>
+       <sliceHeight text="Slice Height" units="mm">0.4</sliceHeight>
        <!--Top speed in millimeters/second for this tool during execution of path.-->
-         <pathSpeed text="Path Speed" units="mm/s">10</pathSpeed>
+         <pathSpeed text="Path Speed" units="mm/s">30</pathSpeed>
        <!--Width of the path in millimeters.-->
-         <pathWidth text="Path Width" units="mm">1</pathWidth>
+         <pathWidth text="Path Width" units="mm">1.5</pathWidth>
        <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
          <depositionRate text="DepositionRate" units="mm/mm">0.0035</depositionRate>
        <!--Seconds of early dispensing to start flow quickly.-->
