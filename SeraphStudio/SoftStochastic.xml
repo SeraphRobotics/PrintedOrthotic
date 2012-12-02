@@ -1,5 +1,5 @@
  <toolScript name="Soft-Stochastic"
-             description="Stochastic sample 41, blue tip, 70psi, offset 5mm"
+             description="Stochastic sample 89, red tip, 70psi, offset 20mm"
              printer="Stochastic">
 
   <settings>
@@ -8,11 +8,11 @@
   </settings>
 
    <!-- Expose settings for the first tool -->
-   <tool name="Green Taper SoftStochastic" material="SoftStochastic" scriptVariable="SoftStochastic">
+   <tool name="red Taper SoftStochastic" material="SoftStochastic" scriptVariable="SoftStochastic">
      <settings>
-       <sliceHeight text="Slice Height" units="mm">0.7</sliceHeight>
+       <sliceHeight text="Slice Height" units="mm">0.8</sliceHeight>
        <!--Top speed in millimeters/second for this tool during execution of path.-->
-         <pathSpeed text="Path Speed" units="mm/s">20</pathSpeed>
+         <pathSpeed text="Path Speed" units="mm/s">5</pathSpeed>
        <!--Width of the path in millimeters.-->
          <pathWidth text="Path Width" units="mm">2</pathWidth>
        <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
