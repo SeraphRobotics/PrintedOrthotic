@@ -6,7 +6,7 @@
       <compressionvolume>0.9925</compressionvolume>
       <name>HardStochastic</name>
       <pathheight>0.4</pathheight>
-      <pathspeed>30</pathspeed>
+      <pathspeed>10</pathspeed>
       <pathwidth>1.5</pathwidth>
     </material>
     <material>

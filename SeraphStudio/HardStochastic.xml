@@ -12,7 +12,7 @@
      <settings>
        <sliceHeight text="Slice Height" units="mm">0.4</sliceHeight>
        <!--Top speed in millimeters/second for this tool during execution of path.-->
-         <pathSpeed text="Path Speed" units="mm/s">30</pathSpeed>
+         <pathSpeed text="Path Speed" units="mm/s">10</pathSpeed>
        <!--Width of the path in millimeters.-->
          <pathWidth text="Path Width" units="mm">1.5</pathWidth>
        <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
