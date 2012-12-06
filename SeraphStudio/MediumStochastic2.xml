@@ -1,0 +1,79 @@
+ <toolScript name="MEDIUM-Stochastic-2"
+             description="Stochastic-39, 70psi,2mm offset, blue"
+             printer="Stochastic">
+
+  <settings>
+    <!-- Settings that are not per-tool -->
+    <printAcceleration text="Print Acceleration" units="mm/s^2">100</printAcceleration>
+  </settings>
+
+   <!-- Expose settings for the first tool -->
+   <tool name="Blue Taper MediumStochastic2" material="MediumStochastic2" scriptVariable="MediumStochastic2">
+     <settings>
+       <sliceHeight text="Slice Height" units="mm">0.6</sliceHeight>
+       <!--Top speed in millimeters/second for this tool during execution of path.-->
+         <pathSpeed text="Path Speed" units="mm/s">20</pathSpeed>
+       <!--Width of the path in millimeters.-->
+         <pathWidth text="Path Width" units="mm">0.9</pathWidth>
+       <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
+         <depositionRate text="DepositionRate" units="mm/mm">0.0035</depositionRate>
+       <!--Seconds of early dispensing to start flow quickly.-->
+         <pushout text="Pushout" units="seconds">0.5</pushout>
+       <!--Seconds reverse plunger motion to stop flow quickly.-->
+         <suckback text="Suckback" units="seconds">0.5</suckback>
+       <!--Seconds to delay suckback by.-->
+         <suckbackDelay text="Suckback Delay" units="seconds">0</suckbackDelay>
+       <!--Millimeters of clearance between tip and last layer when traversing.-->
+         <clearance text="Clearance" units="mm">0</clearance>
+       <!--Number of paths after which to trigger an automatic pause.-->
+         <pausePaths text="Pause after # Paths" units="# of paths">300</pausePaths>
+       <!--no comment-->
+         <pitch text="Pitch" units="?">0.000397</pitch>
+     </settings>
+   </tool>
+
+  <printScript>
+  <![CDATA[
+function makeCalib(x){
+  x.CompressionVolume = (x.pushout+x.suckback)*.5*5000*x.pitch;
+  x.AreaConstant  = x.depositionRate*3.14159265*64/x.sliceHeight/x.pathWidth;
+
+  y={pathSpeed: x.pathSpeed,
+	 pathHeight: x.sliceHeight,
+	 pathWidth: x.pathWidth,
+	 areaConstant: x.AreaConstant,
+	 compressionVolume: x.CompressionVolume
+	}
+  return y;
+}
+progress.setSteps(MediumStochastic2.meshes.length*2 + 3);
+
+slicer.setSliceHeight(MediumStochastic2.sliceHeight);
+pather.set("PathWidth", MediumStochastic2.pathWidth);
+for (var i = 0; i < MediumStochastic2.meshes.length; ++i) {
+  progress.log("Slicing MediumStochastic2 Mesh");
+  slicer.doSlicing(MediumStochastic2.meshes[i]);
+  progress.step();
+  progress.log("Pathing MediumStochastic2 Mesh");
+  pather.doPathing(MediumStochastic2.meshes[i]);
+  progress.step();
+}
+
+var MediumStochastic2MaterialCalibration = makeCalib(MediumStochastic2);
+
+var fabWriter = fabFile.fabAtHomeModel2Writer();
+
+fabWriter.addMeshes("MediumStochastic2", MediumStochastic2MaterialCalibration, MediumStochastic2.meshes);
+progress.step();
+
+fabWriter.sortBottomUp();
+fabWriter.setPrintAcceleration(printAcceleration);
+
+progress.step();
+fabWriter.print();
+
+progress.finish();
+
+  ]]>
+  </printScript>
+</toolScript>
