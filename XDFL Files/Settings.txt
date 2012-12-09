@@ -1,0 +1,39 @@
+Main
+X  63.06
+Y  31.51
+Z  5
+Rx 90
+
+Heal
+X  140.30
+y  35.25
+z  5
+Rx 90
+
+MetPadd
+X  54.1
+Y  36.5
+Z  5
+Rx 90
+
+
+§ Merge
+§ Translate
+§ offset
+§ clearance
+§ Parity
+
+
+
+Hard
+Offset z  5
+matnumber 3
+
+Soft
+Offset z  20
+Ofset y  -40
+matnumber 2
+
+Medium
+Offset z  2
+matnumber 1

@@ -2022,4 +2022,39 @@ loadobjectspanel.cpp(69):  "enable the 'browse' button in the LoadObjectsPanel" 
  </font></pre><br/><pre><font color="black">"Pathing SoftStochastic Mesh" 
  </font></pre><br/><pre><font color="black">"Slicing HardStochastic Mesh" 
  </font></pre><br/><pre><font color="black">"Pathing HardStochastic Mesh" 
- 
+ </font></pre><br/><br/><br/><pre><font color="green">
+----[  todo() report by hits  ]----------------------------------
+..\..\..\shared\math\loopinxyplane.cpp(506):  "correctly implement the algorithm for picking valid loops" - kwg8 (hit 207 times - 2ms)
+..\..\..\shared\pather\simplecrosshatchpather.cpp(309):  "Sanitize the paths to remove paths that double-back on themselves" - kwg8 (hit 53 times - 1ms)
+..\..\..\shared\slicer\slicer.cpp(182):  "make this intersection test not check every single triangle in the source mesh" - kwg8 (hit 53 times - 71ms)
+mainwindow.cpp(722):  "Find items in the View menu less hackishly" - kwg8 (hit 38 times - 1ms)
+materialspanel.cpp(126):  "optimize updateAssignedMaterials by not calling updateUI if the set of materials is the same as the current one" - kwg8 (hit 33 times - 69ms)
+..\..\..\shared\toolscript\toolscript.cpp(107):  "check these names for validity; else, toolscript is not valid" - kwg8 (hit 31 times - 5ms)
+loadobjectfilethread.cpp(48):  "check the object's size based on attributes of printer, not random constants" - kwg8 (hit 4 times - 2ms)
+..\..\..\shared\stl\stlfile.cpp(586):  "This method doesn't actually weld vertices to create a solid mesh" - kwg8 (hit 4 times - 0ms)
+printableobject.cpp(99):  "instead of basing this purely on extension, we could attempt some sort of file analysis" - kwg8 (hit 4 times - 30ms)
+loadobjectspanel.cpp(176):  "re-scan changed directory while scan for object files thread is still running" - kwg8 (hit 4 times - 0ms)
+mainwindow.cpp(122):  "add the ability to detect when a dock widget is closed and update the screen!" - kwg8 (hit 4 times - 12ms)
+..\..\..\shared\amf\amfmesh.cpp(230):  "clear out destination mesh" - kwg8 (hit 3 times - 2ms)
+modifytoolandprintersettingsdialog.cpp(122):  "set toolscript's preferred pather" - kwg8 (hit 2 times - 0ms)
+modifytoolandprintersettingsdialog.cpp(121):  "set toolscript's preferred slicer" - kwg8 (hit 2 times - 0ms)
+loadobjectspanel.cpp(69):  "enable the 'browse' button in the LoadObjectsPanel" - kwg8 (hit 1 time - 0ms)
+
+----[  todo() report by time  ]----------------------------------
+..\..\..\shared\slicer\slicer.cpp(182):  "make this intersection test not check every single triangle in the source mesh" - kwg8 (hit 53 times - 71ms)
+materialspanel.cpp(126):  "optimize updateAssignedMaterials by not calling updateUI if the set of materials is the same as the current one" - kwg8 (hit 33 times - 69ms)
+printableobject.cpp(99):  "instead of basing this purely on extension, we could attempt some sort of file analysis" - kwg8 (hit 4 times - 30ms)
+mainwindow.cpp(122):  "add the ability to detect when a dock widget is closed and update the screen!" - kwg8 (hit 4 times - 12ms)
+..\..\..\shared\toolscript\toolscript.cpp(107):  "check these names for validity; else, toolscript is not valid" - kwg8 (hit 31 times - 5ms)
+..\..\..\shared\math\loopinxyplane.cpp(506):  "correctly implement the algorithm for picking valid loops" - kwg8 (hit 207 times - 2ms)
+loadobjectfilethread.cpp(48):  "check the object's size based on attributes of printer, not random constants" - kwg8 (hit 4 times - 2ms)
+..\..\..\shared\amf\amfmesh.cpp(230):  "clear out destination mesh" - kwg8 (hit 3 times - 2ms)
+..\..\..\shared\pather\simplecrosshatchpather.cpp(309):  "Sanitize the paths to remove paths that double-back on themselves" - kwg8 (hit 53 times - 1ms)
+mainwindow.cpp(722):  "Find items in the View menu less hackishly" - kwg8 (hit 38 times - 1ms)
+..\..\..\shared\stl\stlfile.cpp(586):  "This method doesn't actually weld vertices to create a solid mesh" - kwg8 (hit 4 times - 0ms)
+loadobjectspanel.cpp(176):  "re-scan changed directory while scan for object files thread is still running" - kwg8 (hit 4 times - 0ms)
+modifytoolandprintersettingsdialog.cpp(122):  "set toolscript's preferred pather" - kwg8 (hit 2 times - 0ms)
+modifytoolandprintersettingsdialog.cpp(121):  "set toolscript's preferred slicer" - kwg8 (hit 2 times - 0ms)
+loadobjectspanel.cpp(69):  "enable the 'browse' button in the LoadObjectsPanel" - kwg8 (hit 1 time - 0ms)
+-----------------------------------------------------------------
+</font></pre>
