@@ -19,12 +19,13 @@ manips[mediumID] = mediumOffset
 manips[softID] = softOffset
 
 def process(fabTree):
+    fabTree = sortIntoLayers(fabTree)
     #TRANSLATE
     for id in manips.keys();
         t = manips[id]
-        translate(fabTree,t[0],t[1],t[2],id)
-    setClearance(fabTree,clearance, clearanceSpeed)
-    parity(fabTree)
+        fabTree = translate(fabTree,t[0],t[1],t[2],id)
+    fabTree = setClearance(fabTree,clearance, clearanceSpeed)
+    fabTree = parity(fabTree)
     return fabTree
     
     
