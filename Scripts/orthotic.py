@@ -2,7 +2,7 @@ from manipulations import *
 
 #############################################
 
-hardOffset = [0,0,5]
+hardOffset = [0,0,0]
 mediumOffset = [0,0,3]
 softOffset = [0,0,20]
 
@@ -45,7 +45,9 @@ if __name__ == '__main__':
     for el in fabTree.iter(): el.tag = el.tag.lower()
     
     process(fabTree)
-    writeTree(sys.argv[1],fabTree)
+    
+    if len(sys.argv)>2: writeTree(sys.argv[2],fabTree)
+    else: writeTree(sys.argv[1],fabTree)
     
     
     

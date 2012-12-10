@@ -1,39 +1,48 @@
+Wall
+X	77.15
+Y	33.6
+Z	5
+Rx	90
+Crosshatch only
+
+covering
+X	77.15
+Y	33.6
+Z	1
+Rx	90
+Scale y	20%
+Crosshatch only
+
+
+
+
 Main
-X  63.06
-Y  31.51
-Z  5
-Rx 90
+X	69.80
+Y	33.70
+Z	5
+Rx	90
 
 Heal
-X  140.30
-y  35.25
-z  5
-Rx 90
+X	136.5
+y	37.30
+z	5
+Rx	90
 
 MetPadd
-X  54.1
-Y  36.5
-Z  5
-Rx 90
+X	49.3
+Y	38.4
+Z	5
+Rx	90
 
 
-§ Merge
-§ Translate
-§ offset
-§ clearance
-§ Parity
+Merged pad,heal,main,wall -> walled.xdfl
+Translated  walled.xdfl 0 0 1.7
+Merged with cover -> WalledWithCover.xdfl
+
+mat	Id	Offset z
+Hard	1	0
+Med	2	3
+soft	3	20
 
 
-
-Hard
-Offset z  5
-matnumber 3
-
-Soft
-Offset z  20
-Ofset y  -40
-matnumber 2
-
-Medium
-Offset z  2
-matnumber 1
+Orthotic.py -> WalledWithCoverProcessed.xdfl
