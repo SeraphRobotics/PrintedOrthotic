@@ -4,11 +4,16 @@ from manipulations import *
 
 hardOffset = [0,0,5]
 mediumOffset = [0,0,3]
-softOffset = [0,-40,20]
+softOffset = [0,0,20]
 
-hardID = 3
+
+
+hardID = 2
 mediumID = 1
-softID = 2
+softID = 3
+
+padTranslate = [0,-40,0]
+padID = softID
 
 clearance=10
 clearanceSpeed=10
@@ -21,24 +26,26 @@ manips[softID] = softOffset
 def process(fabTree):
     fabTree = sortIntoLayers(fabTree)
     #TRANSLATE
-    for id in manips.keys();
+    for id in manips.keys():
         t = manips[id]
         fabTree = translate(fabTree,t[0],t[1],t[2],id)
-    fabTree = setClearance(fabTree,clearance, clearanceSpeed)
+        
     fabTree = parity(fabTree)
+    fabTree = translate(fabTree,padTranslate[0],padTranslate[1],padTranslate[2],padID)
+    fabTree = setClearance(fabTree,clearance, clearanceSpeed)
+       
     return fabTree
     
     
     
 if __name__ == '__main__':
     import sys
-    todo = sys.argv[1]
     
-    fabTree = ElementTree(file = sys.argv[2])
+    fabTree = ElementTree(file = sys.argv[1])
     for el in fabTree.iter(): el.tag = el.tag.lower()
     
     process(fabTree)
-    writeTree(sys.argv[2],fabTree)
+    writeTree(sys.argv[1],fabTree)
     
     
     

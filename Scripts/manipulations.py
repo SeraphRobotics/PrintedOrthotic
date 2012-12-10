@@ -251,30 +251,30 @@ def parity(fabTree, id=-1):
     
     
 #####################################################
-    def indent(elem, level=0):
-        # Helper function that fixes the indentation scheme of a given Element object and all of its subelements
-        # Modified from: http://infix.se/2007/02/06/gentlemen-indent-your-xml
-        i = "\n" + level*"  "
-        if len(elem):
-            if not elem.text or not elem.text.strip():
-                elem.text = i + "  "
-            for e in elem:
-                indent(e, level+1)
-                if not e.tail or not e.tail.strip():
-                    e.tail = i + "  "
-            if not e.tail or not e.tail.strip():
-                e.tail = i
-        else:
-            if level and (not elem.tail or not elem.tail.strip()):
-                elem.tail = i
+def indent(elem, level=0):
+	# Helper function that fixes the indentation scheme of a given Element object and all of its subelements
+	# Modified from: http://infix.se/2007/02/06/gentlemen-indent-your-xml
+	i = "\n" + level*"  "
+	if len(elem):
+		if not elem.text or not elem.text.strip():
+			elem.text = i + "  "
+		for e in elem:
+			indent(e, level+1)
+			if not e.tail or not e.tail.strip():
+				e.tail = i + "  "
+		if not e.tail or not e.tail.strip():
+			e.tail = i
+	else:
+		if level and (not elem.tail or not elem.tail.strip()):
+			elem.tail = i
 
-    def writeTree(output_file, tree):
-        f = open(output_file, 'w')
-        f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?> \n")
-        indent(tree.getroot())
-        string = etree.tostring(tree.getroot())
-        f.write(string)
-        f.close()    
+def writeTree(output_file, tree):
+	f = open(output_file, 'w')
+	f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?> \n")
+	indent(tree.getroot())
+	string = etree.tostring(tree.getroot())
+	f.write(string)
+	f.close()    
     
 if __name__ == '__main__':
     import sys
