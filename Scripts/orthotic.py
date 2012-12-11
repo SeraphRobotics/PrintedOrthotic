@@ -8,8 +8,8 @@ softOffset = [0,0,20]
 
 
 
-hardID = 2
-mediumID = 1
+hardID = 1
+mediumID = 2
 softID = 3
 
 padTranslate = [0,-40,0]
