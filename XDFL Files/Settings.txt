@@ -1,8 +1,9 @@
 Wall
 X	77.15
 Y	33.6
-Z	5
+Z	3
 Rx	90
+Scale y	60
 Crosshatch only
 
 covering
@@ -19,30 +20,36 @@ Crosshatch only
 Main
 X	69.80
 Y	33.70
-Z	5
+Z	3
 Rx	90
+Scale y	60
 
 Heal
 X	136.5
 y	37.30
-z	5
+z	3
 Rx	90
+Scale y	60
 
-MetPadd
+Met Pad
 X	49.3
 Y	38.4
-Z	5
+Z	3
 Rx	90
+Scale y	60
 
-
-Merged pad,heal,main,wall -> walled.xdfl
+Copy cover.xdfl -> topcover.xdfl 
+Merged pad, heal, main, wall -> walled.xdfl
 Translated  walled.xdfl 0 0 1.7
 Merged with cover -> WalledWithCover.xdfl
+Translate topcover.xdfl 0 0 7.7
+Merge WalledWithCover topcover.xdfl - >WalledWithBothCovers.xdfl
+
 
 mat	Id	Offset z
-Hard	1	0
+Hard	1	2
 Med	2	3
 soft	3	20
 
 
-Orthotic.py -> WalledWithCoverProcessed.xdfl
+Orthotic.py -> WalledWithBothCoversProcessed.xdfl 

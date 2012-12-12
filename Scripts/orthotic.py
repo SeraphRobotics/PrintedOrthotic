@@ -2,7 +2,7 @@ from manipulations import *
 
 #############################################
 
-hardOffset = [0,0,0]
+hardOffset = [0,0,2]
 mediumOffset = [0,0,3]
 softOffset = [0,0,20]
 
