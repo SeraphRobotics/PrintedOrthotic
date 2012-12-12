@@ -4,7 +4,7 @@ from manipulations import *
 
 hardOffset = [0,0,2]
 mediumOffset = [0,0,3]
-softOffset = [0,0,20]
+softOffset = [0,0,5]
 
 
 
@@ -31,7 +31,7 @@ def process(fabTree):
         fabTree = translate(fabTree,t[0],t[1],t[2],id)
         
     fabTree = parity(fabTree)
-    fabTree = translate(fabTree,padTranslate[0],padTranslate[1],padTranslate[2],padID)
+    #fabTree = translate(fabTree,padTranslate[0],padTranslate[1],padTranslate[2],padID)
     fabTree = setClearance(fabTree,clearance, clearanceSpeed)
        
     return fabTree

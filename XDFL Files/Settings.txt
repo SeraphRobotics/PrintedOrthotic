@@ -39,17 +39,18 @@ Rx	90
 Scale y	60
 
 Copy cover.xdfl -> topcover.xdfl 
+Translate topcover.xdfl 0 0 7.7
+
 Merged pad, heal, main, wall -> walled.xdfl
 Translated  walled.xdfl 0 0 1.7
 Merged with cover -> WalledWithCover.xdfl
-Translate topcover.xdfl 0 0 7.7
 Merge WalledWithCover topcover.xdfl - >WalledWithBothCovers.xdfl
 
 
 mat	Id	Offset z
 Hard	1	2
-Med	2	3
-soft	3	20
+Med	    2	3
+soft	3	5
 
 
 Orthotic.py -> WalledWithBothCoversProcessed.xdfl 
