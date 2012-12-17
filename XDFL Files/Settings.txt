@@ -41,10 +41,10 @@ Scale y	60
 Copy cover.xdfl -> topcover.xdfl 
 Translate topcover.xdfl 0 0 7.7
 
-Merged pad, heal, main, wall -> walled.xdfl
-Translated  walled.xdfl 0 0 1.7
-Merged with cover -> WalledWithCover.xdfl
-Merge WalledWithCover topcover.xdfl - >WalledWithBothCovers.xdfl
+Merge walled.xdfl 10 heal, main, pad, wall -> walled.xdfl
+Translated  walled.xdfl 0 0 2
+Merge WalledWithCover 10 walled.xdfl cover.xdfl -> WalledWithCover.xdfl
+Merge WalledWithBothCovers.xdfl 10 WalledWithCover topcover.xdfl - >WalledWithBothCovers.xdfl
 
 
 mat	Id	Offset z
@@ -53,4 +53,4 @@ Med	    2	3
 soft	3	5
 
 
-Orthotic.py -> WalledWithBothCoversProcessed.xdfl 
+python ..\Scripts\Orthotic.py WalledWithBothCovers.xdfl complete.xdfl
