@@ -158,7 +158,7 @@ def setClearance(fabTree, clearance, speed= 10):
         return fabTree
 
 def xdfl2fab(fabTree):
-
+    ### NEED TO TRANSFORM MATERIALS############
     newroot = Element("fabAtHomePrinter")
     newTree = ElementTree(newroot)
     pathaccel = Element("printAcceleration")
@@ -247,34 +247,50 @@ def parity(fabTree, id=-1):
     
     return forEachPoint(fabTree,parityor,[],id)
 
+def mirror(fabTree, axisname, id=-1):
     
-    
+    def glass(values,arguments):
+        axisname = arguments[0]
+        axisname.lower()
+        
+        axes = ["x","y","z"]
+        signs=[1,1,1]
+        newvalues=[0,0,0]
+        
+        for i in range(0,len(axes)):
+            signs[i] = 2*int(not(axisname==axes[i]))-1
+        for i in range(0,len(values)):
+            newvalues[i] = signs[i]*values[i]
+        
+        return newvalues
+        
+    return forEachPoint(fabTree,glass,[axisname],id)
     
 #####################################################
 def indent(elem, level=0):
-	# Helper function that fixes the indentation scheme of a given Element object and all of its subelements
-	# Modified from: http://infix.se/2007/02/06/gentlemen-indent-your-xml
-	i = "\n" + level*"  "
-	if len(elem):
-		if not elem.text or not elem.text.strip():
-			elem.text = i + "  "
-		for e in elem:
-			indent(e, level+1)
-			if not e.tail or not e.tail.strip():
-				e.tail = i + "  "
-		if not e.tail or not e.tail.strip():
-			e.tail = i
-	else:
-		if level and (not elem.tail or not elem.tail.strip()):
-			elem.tail = i
+    # Helper function that fixes the indentation scheme of a given Element object and all of its subelements
+    # Modified from: http://infix.se/2007/02/06/gentlemen-indent-your-xml
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        for e in elem:
+            indent(e, level+1)
+            if not e.tail or not e.tail.strip():
+                e.tail = i + "  "
+        if not e.tail or not e.tail.strip():
+            e.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
 
 def writeTree(output_file, tree):
-	f = open(output_file, 'w')
-	f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?> \n")
-	indent(tree.getroot())
-	string = etree.tostring(tree.getroot())
-	f.write(string)
-	f.close()    
+    f = open(output_file, 'w')
+    f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?> \n")
+    indent(tree.getroot())
+    string = etree.tostring(tree.getroot())
+    f.write(string)
+    f.close()    
     
 if __name__ == '__main__':
     import sys
@@ -292,6 +308,7 @@ if __name__ == '__main__':
         print " translate\tmanipulations.py translate 'file name' x y z (id)"
         print " rotate  \tmanipulations.py rotate 'file name' theta ('write name')"
         print " parity  \tmanipulations.py parity 'file name' ('write name')"
+        print " mirror  \tmanipulations.py mirror 'file name' 'axis' ('write name')"
         print " startpath\tmanipulations.py startpath 'file name' index ('write name')"
         print " dimensions\tmanipulations.py dimensions 'file name' "
         print " drop clearance\tmanipulations.py dropclearance 'filename' ('write name')"
@@ -323,7 +340,6 @@ if __name__ == '__main__':
             else: print_error()
         
         elif todo == "rotate":
-            # rotate XDFL file 
             if len(sys.argv)>2:
                 theta = float(sys.argv[3])
                 fabTree=rotate(fabTree, theta)
@@ -332,12 +348,16 @@ if __name__ == '__main__':
             else: print_error()
 
         elif todo == "parity":
-            # rotate XDFL file 
-            print "parity"
             fabTree=parity(fabTree)
             if len(sys.argv)>3: writeTree(sys.argv[3],fabTree)
             else: writeTree(sys.argv[2],fabTree)
-            
+        
+        elif todo == "mirror": 
+            print "len sys.argv ", sys.argv
+            fabTree=mirror(fabTree, sys.argv[3])
+            if len(sys.argv)>4: writeTree(sys.argv[4],fabTree)
+            else: writeTree(sys.argv[2],fabTree)
+            print "done"            
         elif todo == "dimensions":
             (minvalues,maxvalues) = dimensions(fabTree)
             print minvalues,maxvalues
@@ -361,7 +381,6 @@ if __name__ == '__main__':
             writeTree(sys.argv[2],fabTree)
             
         elif todo == "scale":
-            #translate fabfile x yz
             if len(sys.argv)>6:
                 x = float(sys.argv[3])
                 y = float(sys.argv[4])
