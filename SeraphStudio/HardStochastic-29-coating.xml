@@ -1,5 +1,5 @@
- <toolScript name="Stochastic29"
-             description="Stochastic sample 58, blue tip, 5mm offset, 70psi"
+ <toolScript name="Stochastic29coating"
+             description="Stochastic sample 29, blue tip, 2mm offset, 70psi"
              printer="Stochastic">
 
   <settings>
@@ -46,6 +46,7 @@ function makeCalib(x){
 	}
   return y;
 }
+progress.log("START");
 progress.setSteps(StochasticTwentyNineCoating.meshes.length*2 + 3);
 
 slicer.setSliceHeight(StochasticTwentyNineCoating.sliceHeight);

@@ -1,5 +1,5 @@
  <toolScript name="Stochastic29"
-             description="Stochastic sample 58, blue tip, 5mm offset, 70psi"
+             description="Stochastic sample 29, blue tip, 2mm offset, 70psi"
              printer="Stochastic">
 
   <settings>
@@ -14,7 +14,7 @@
        <!--Top speed in millimeters/second for this tool during execution of path.-->
          <pathSpeed text="Path Speed" units="mm/s">10</pathSpeed>
        <!--Width of the path in millimeters.-->
-         <pathWidth text="Path Width" units="mm">1</pathWidth>
+         <pathWidth text="Path Width" units="mm">1.0</pathWidth>
        <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
          <depositionRate text="DepositionRate" units="mm/mm">0</depositionRate>
        <!--Seconds of early dispensing to start flow quickly.-->
@@ -46,10 +46,13 @@ function makeCalib(x){
 	}
   return y;
 }
+progress.log("START");
 progress.setSteps(StochasticTwentyNine.meshes.length*2 + 3);
-
+progress.log("Set STEPS");
 slicer.setSliceHeight(StochasticTwentyNine.sliceHeight);
 pather.set("PathWidth", StochasticTwentyNine.pathWidth);
+progress.log("SET VARIABLES");
+
 for (var i = 0; i < StochasticTwentyNine.meshes.length; ++i) {
   progress.log("Slicing StochasticTwentyNine Mesh");
   slicer.doSlicing(StochasticTwentyNine.meshes[i]);
