@@ -3,16 +3,22 @@ from xml.etree.ElementTree import ElementTree, Element
 import xml.etree.ElementTree as etree
 from math import cos, sin, pi
 
-########################Helper Functions###########################################
+
+######################## Global Defs ################################################
+axes = ["x", "y", "z"]
+DEBUG = False
+######################## Helper Functions ###########################################
+
+
+
 def pointsListFromPathEl(pathEl):
     pointsList=[]
-    for pointEl in pathEl.getiterator("point"):
+    for pointEl in pathEl.iter("point"):
         pList = pointListFromPointEl(pointEl)
         pointsList.append(pList)
     return pointsList
 
 def pointListFromPointEl(pointEl):
-    axes = ["x", "y", "z"]
     indecies = [0,1,2]
     pList=[0,0,0]
     for index in indecies:
@@ -42,7 +48,6 @@ def pathFromPointsList(pointsList, id=0, speed=10):
 
 def pointFromList(pointAsList):
     ### Take a point [x,y,z] to XDFL format
-    axes = ["x", "y", "z"]
     indecies = [0,1,2]
     p = Element("point")
     for index in indecies:
@@ -56,7 +61,7 @@ def sortIntoLayers(fabTree):
     slices={}
     root = fabTree.getroot()
     cmd = root.find("commands")
-    for path in cmd.getiterator("path"):
+    for path in cmd.iter("path"):
         z = float(path.find("point").find("z").text)
         if z in slices.keys(): slices[z].append(path)
         else: slices[z]=[path]
@@ -69,22 +74,22 @@ def sortIntoLayers(fabTree):
 
 def threshold(fabTree, threshold=0):
     "This will threshold a fabFile element tree and return the tree"
-    for path in fabTree.getiterator("path"):
+    for path in fabTree.iter("path"):
         zValue = float(path.find("point").find("z").text)
         if zValue <= threshold: fabTree.getroot().remove(path)
     return fabTree
     
 def dimensions(fabTree, name=None):
-    axes = ["x", "y", "z"]
     minvalues = [0, 0, 0]
     maxvalues = [0, 0,0]
     "This will translate a fabFile element tree and return the tree"
-    for path in fabTree.getiterator("path"):
+    for path in fabTree.iter("path"):
         for point in path.findall("point"):
             for i in range(0, 3):
                 el = point.find(axes[i])
                 if(type(None)==type(el)):
-                    print "no", axes[i]
+                    if(DEBUG): print "no", axes[i]
+                    pass
                 else:
                     val = float(el.text)
                     if (val > maxvalues[i]): maxvalues[i]=val
@@ -97,10 +102,10 @@ def startpath(fabTree, number):
     root = fabTree.getroot()
     cmd = root.find("commands")
     i = 0;
-    for path in fabTree.getiterator("path"):
+    for path in fabTree.iter("path"):
         i= i+1
         if (i < number):
-            print "removed ",i 
+            if(DEBUG): print "removed ",i 
             cmd.remove(path)
     return fabTree
     
@@ -108,7 +113,7 @@ def dropClearance(fabTree):
     root = fabTree.getroot()
     cmd = root.find("commands")
     i = 0;
-    for path in fabTree.getiterator("path"):
+    for path in fabTree.iter("path"):
         matid=0
         matidel = path.find("materialID")
         if (type(None) == type(matidel)): 
@@ -131,9 +136,12 @@ def setClearance(fabTree, clearance, speed= 10):
         
         firstpath=True
         lastpoint=[0,0,0]
-        for path in oldcmd.getiterator("path"):
+        for path in oldcmd.iter("path"):
             ##Turn path into points list
             pathpoints = pointsListFromPathEl(path)
+            if (not len(pathpoints)):
+                if(DEBUG): print "missing points in path"
+                continue
             
             if firstpath:
                 # if first path, do nothing
@@ -166,16 +174,15 @@ def xdfl2fab(fabTree):
     pathaccel.text = "100"
     matcal = Element("materialCalibration")
     newroot.append(matcal)
-    for path in fabTree.getiterator("path"):
+    for path in fabTree.iter("path"):
         if not(len(path.findall("speed"))):
             newroot.append(path)
     return newTree
     
 ##################MANIPULATIONS ON EACH POINT (OR MATERIAL'S POINTS)###############################
 def forEachPoint(fabTree, argFunction, arguments, targetMatId=-1):
-    axes = ["x", "y", "z"]
     "This will translate a fabFile element tree and return the tree"
-    for path in fabTree.getiterator("path"):
+    for path in fabTree.iter("path"):
         matid=0
         matidel = path.find("materialID")
         if (type(None) == type(matidel)): 
@@ -183,10 +190,10 @@ def forEachPoint(fabTree, argFunction, arguments, targetMatId=-1):
         if (type(None) != type(matidel)): 
             matid = int(matidel.text)
         
-        print "ID is %i, target is%i"%(matid,targetMatId)
+        if(DEBUG):print "ID is %i, target is%i"%(matid,targetMatId)
         
         if ((targetMatId==-1) or (matid== targetMatId)):
-            print "doing"
+            if(DEBUG):print "doing"
             for point in path.findall("point"):
                 elements = []
                 for i in range(0,3):elements.append(Element(axes[i]))
@@ -194,7 +201,8 @@ def forEachPoint(fabTree, argFunction, arguments, targetMatId=-1):
                 for i in range(0, 3):
                     el = point.find(axes[i])
                     if(type(None)==type(el)):
-                        print "no", axes[i]
+                        if(DEBUG):print "no", axes[i]
+                        pass
                     else:
                         elements[i] = el
                         val = float(el.text)
@@ -224,18 +232,41 @@ def translate(fabTree, dx=0, dy=0, dz=0,id=-1):
     values = [dx, dy, dz]    
     return forEachPoint(fabTree, translator, values, id) 
 
-def rotate(fabTree, theta,id=-1):
+def rotate(fabTree, theta,axis='z',id=-1):
     "This will rotate element tree and return the tree"
-    def rotator(values,arguments):
+    def rotatorZ(values,arguments):
         thetaInRadians=arguments[0]/180*pi
         newvalues=[0,0,0]
         newvalues[0] = cos(thetaInRadians)*values[0]-sin(thetaInRadians)*values[1]
         newvalues[1] = sin(thetaInRadians)*values[0]+cos(thetaInRadians)*values[1]   
         newvalues[2] = values[2]
         return newvalues
-        
-    return forEachPoint(fabTree, rotator, [theta], id) 
     
+    def rotatorY(values,arguments):
+        thetaInRadians=arguments[0]/180*pi
+        newvalues=[0,0,0]
+        newvalues[0] = cos(thetaInRadians)*values[0]-sin(thetaInRadians)*values[2]
+        newvalues[1] = values[1]   
+        newvalues[2] = sin(thetaInRadians)*values[0]+cos(thetaInRadians)*values[2]
+        return newvalues    
+    
+    def rotatorX(values,arguments):
+        thetaInRadians=arguments[0]/180*pi
+        newvalues=[0,0,0]
+        newvalues[0] = values[0]
+        newvalues[1] = cos(thetaInRadians)*values[1]-sin(thetaInRadians)*values[2]   
+        newvalues[2] = sin(thetaInRadians)*values[1]+cos(thetaInRadians)*values[2]
+        return newvalues        
+    
+    axis.lower()
+    if(axis=='x'):
+        return forEachPoint(fabTree, rotatorX, [theta], id) 
+    elif(axis=='y'):
+        return forEachPoint(fabTree, rotatorY, [theta], id) 
+    elif(axis=='z'):
+        return forEachPoint(fabTree, rotatorZ, [theta], id)     
+        
+        
 def parity(fabTree, id=-1):
     "This will parity transform the points in the XY plane of a element tree and return the tree"
     def parityor(values,arguments):
@@ -306,7 +337,7 @@ if __name__ == '__main__':
     if todo== "help":
         print " theshold\tmanipulations.py threshold 'file name' ('write name')"
         print " translate\tmanipulations.py translate 'file name' x y z (id)"
-        print " rotate  \tmanipulations.py rotate 'file name' theta ('write name')"
+        print " rotate  \tmanipulations.py rotate 'file name' theta axis('write name')"
         print " parity  \tmanipulations.py parity 'file name' ('write name')"
         print " mirror  \tmanipulations.py mirror 'file name' 'axis' ('write name')"
         print " startpath\tmanipulations.py startpath 'file name' index ('write name')"
@@ -342,8 +373,9 @@ if __name__ == '__main__':
         elif todo == "rotate":
             if len(sys.argv)>2:
                 theta = float(sys.argv[3])
-                fabTree=rotate(fabTree, theta)
-                if len(sys.argv)>4: writeTree(sys.argv[4], fabTree)
+                axis = sys.argv[4]
+                fabTree=rotate(fabTree,theta,axis)
+                if len(sys.argv)>5: writeTree(sys.argv[5], fabTree)
                 else: writeTree(sys.argv[2], fabTree)                
             else: print_error()
 
