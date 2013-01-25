@@ -1,0 +1,26 @@
+Arch-minusarch-pad
+x   77.32
+y   37.73
+z   7.34
+rx  -90
+Material Stochastic 29 2mm offset
+
+Arch-Arch
+x   96.6
+y   54.9
+z   8.93
+rx  -90
+Material Green Valve1 0 offset
+
+arch-pad
+x   53.24
+y   38.53
+z   4.96
+rx  -90
+Material medium stochastic 39 2mm offst
+
+merge main.xdfl 1 body.xdfl arch.xdfl pad.xdfl
+manipulations translate main.xdfl 0 0 2 1
+manipulations translate main.xdfl 0 0 2 3
+manipulations parity main.xdfl
+manipulations setclearance main.xdfl .1 5
