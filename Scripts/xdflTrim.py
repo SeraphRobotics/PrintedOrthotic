@@ -9,8 +9,8 @@ from manipulations import *
 DEG = 90.0 
 AXIS = 'y'
 
-CSPEED=30
-CAMOUNT=10
+CSPEED=10#30
+CAMOUNT=.1#10
 
 YThreshold = 0.3
 ZThreshold = 0.1
