@@ -13,11 +13,11 @@
   </palette>
   <commands>
  <path>
-      <speed>10.0</speed>
+      <speed>1.0</speed>
       <point>
         <x>-0.000000</x>
         <y>0.000000</y>
-        <z>2.000000</z>
+        <z>0.000000</z>
       </point>
       <point>
         <x>-0.000000</x>
@@ -39,7 +39,7 @@
       </point>
     </path>
     <path>
-      <speed>10.00</speed>
+      <speed>1.00</speed>
       <point>
         <x>-20.536493</x>
         <y>91.000000</y>
