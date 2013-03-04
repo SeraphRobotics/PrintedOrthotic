@@ -1,4 +1,4 @@
- <toolScript name="ABS Plastic"
+ <toolScript name="PLA Plastic"
              description="Tool:heated plastic extrusion tool"
              printer="Seraph - Plastic Tool">
 
@@ -8,13 +8,13 @@
   </settings>
 
    <!-- Expose settings for the first tool -->
-   <tool name="ABS Plastic" material="ABS Plastic" scriptVariable="plastic">
+   <tool name="PLA Plastic" material="PLA Plastic" scriptVariable="plastic">
      <settings>
        <sliceHeight text="Slice Height" units="mm">.25</sliceHeight>
        <!--Top speed in millimeters/second for this tool during execution of path.-->
-         <pathSpeed text="Path Speed" units="mm/s">20</pathSpeed>
+         <pathSpeed text="Path Speed" units="mm/s">50</pathSpeed>
        <!--Width of the path in millimeters.-->
-         <pathWidth text="Path Width" units="mm">1.0</pathWidth>
+         <pathWidth text="Path Width" units="mm">0.5</pathWidth>
        <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
          <depositionRate text="DepositionRate" units="mm/mm">0.0070</depositionRate>
        <!--Seconds of early dispensing to start flow quickly.-->
@@ -36,7 +36,7 @@
   <printScript>
   <![CDATA[
 function makeCalib(x){
-  x.CompressionVolume = (x.pushout+x.suckback)*.5;
+  x.CompressionVolume = 0*(x.pushout+x.suckback)*.5;
   x.AreaConstant  = 1;
 
   y={pathSpeed: x.pathSpeed,

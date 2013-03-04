@@ -1,0 +1,79 @@
+ <toolScript name="Stochastic-60"
+             description="Stochastic-60, 70psi,5mm offset, blue"
+             printer="Stochastic">
+
+  <settings>
+    <!-- Settings that are not per-tool -->
+    <printAcceleration text="Print Acceleration" units="mm/s^2">100</printAcceleration>
+  </settings>
+
+   <!-- Expose settings for the first tool -->
+   <tool name="Red Taper Stochastic60" material="Stochastic60" scriptVariable="Stochastic60">
+     <settings>
+       <sliceHeight text="Slice Height" units="mm">1.3</sliceHeight>
+       <!--Top speed in millimeters/second for this tool during execution of path.-->
+         <pathSpeed text="Path Speed" units="mm/s">30</pathSpeed>
+       <!--Width of the path in millimeters.-->
+         <pathWidth text="Path Width" units="mm">0.5</pathWidth>
+       <!--(millimeters of plunger motion)/(millimeters tool travel) along deposition path.-->
+         <depositionRate text="DepositionRate" units="mm/mm">0.0035</depositionRate>
+       <!--Seconds of early dispensing to start flow quickly.-->
+         <pushout text="Pushout" units="seconds">0.5</pushout>
+       <!--Seconds reverse plunger motion to stop flow quickly.-->
+         <suckback text="Suckback" units="seconds">0.5</suckback>
+       <!--Seconds to delay suckback by.-->
+         <suckbackDelay text="Suckback Delay" units="seconds">0</suckbackDelay>
+       <!--Millimeters of clearance between tip and last layer when traversing.-->
+         <clearance text="Clearance" units="mm">0</clearance>
+       <!--Number of paths after which to trigger an automatic pause.-->
+         <pausePaths text="Pause after # Paths" units="# of paths">300</pausePaths>
+       <!--no comment-->
+         <pitch text="Pitch" units="?">0.000397</pitch>
+     </settings>
+   </tool>
+
+  <printScript>
+  <![CDATA[
+function makeCalib(x){
+  x.CompressionVolume = (x.pushout+x.suckback)*.5*5000*x.pitch;
+  x.AreaConstant  = x.depositionRate*3.14159265*64/x.sliceHeight/x.pathWidth;
+
+  y={pathSpeed: x.pathSpeed,
+	 pathHeight: x.sliceHeight,
+	 pathWidth: x.pathWidth,
+	 areaConstant: x.AreaConstant,
+	 compressionVolume: x.CompressionVolume
+	}
+  return y;
+}
+progress.setSteps(Stochastic60.meshes.length*2 + 3);
+
+slicer.setSliceHeight(Stochastic60.sliceHeight);
+pather.set("PathWidth", Stochastic60.pathWidth);
+for (var i = 0; i < Stochastic60.meshes.length; ++i) {
+  progress.log("Slicing Stochastic60 Mesh");
+  slicer.doSlicing(Stochastic60.meshes[i]);
+  progress.step();
+  progress.log("Pathing Stochastic60 Mesh");
+  pather.doPathing(Stochastic60.meshes[i]);
+  progress.step();
+}
+
+var Stochastic60MaterialCalibration = makeCalib(Stochastic60);
+
+var fabWriter = fabFile.fabAtHomeModel2Writer();
+
+fabWriter.addMeshes("Stochastic60", Stochastic60MaterialCalibration, Stochastic60.meshes);
+progress.step();
+
+fabWriter.sortBottomUp();
+fabWriter.setPrintAcceleration(printAcceleration);
+
+progress.step();
+fabWriter.print();
+
+progress.finish();
+
+  ]]>
+  </printScript>
+</toolScript>
